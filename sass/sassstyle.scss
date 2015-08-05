@@ -1,0 +1,32 @@
+$container-width:700px;
+$number-of-items:5;
+$key-color:#c00;
+
+#container {
+	width: $container-width;
+	background-color: $key-color;
+	p {
+		clear:both;
+		text-align:center;
+		padding-top:10px;
+	}
+}
+
+ul {
+	list-style: none;
+}
+
+ul li {
+	float: left;
+	margin-right: 5px;
+	width: $container-width/$number-of-items - 20px;
+	padding:5px 0;
+	text-align:center;
+	color:white;
+}
+
+@for $i from 1 through $number-of-items {
+	ul li:nth-child(#{$i}) {
+		background-color: darken($key-color, $i * 5);
+	}
+}

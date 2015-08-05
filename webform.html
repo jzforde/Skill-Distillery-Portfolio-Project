@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+    <meta charset="utf-8">
+    <link href='http://fonts.googleapis.com/css?family=Crimson+Text' rel='stylesheet' type='text/css' media="screen, handheld">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' media="screen, handheld">
+    <link rel='stylesheet' type='text/css' href="webforms.css">
+    <link rel="stylesheet" href="../jquery-ui.min.css">
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="scripts/jquery-2.1.4.js"></script>
+    <script src="scripts/jquery-ui.min.js"></script>
+    <script src="globalize.js"></script>
+    <script src="jquery.mousewheel.js"></script>
+    <script src="scripts/jquery-ui.js"></script>
+    <script src="usCities.json"></script>
+    <script src="sweetalert-master/dist/sweetalert.min.js"></script> 
+    <link rel="stylesheet" type="text/css" href="sweetalert-master/dist/sweetalert.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+
+    <script>
+    $(document).ready(function(){
+      $( "#sectionHeaders" ).accordion();
+      $(".mandatory").hide();
+  });
+
+    var citiesArray = states.map(function(item) {
+      return item['cities'];
+    });
+    //flatten array
+    citiesArray = [].concat.apply([], citiesArray);
+
+    var statesArray = states.map(function(item) {
+      return item['state'];
+    });
+
+    $(function(){
+      $("#city").autocomplete({
+        source: citiesArray
+      });
+      $("#state").autocomplete({
+        source: statesArray
+      });
+  });
+
+    $(function(){
+      for(var i = 0; i <106; i++){
+          $(".age-dropdown").append("<option>" + i + "</option>")
+      }
+  });
+
+    $(function() {
+      $( "#birthday" ).datepicker({
+        yearRange:'1910:1997',
+        changeMonth: true,
+        changeYear: true,
+        defaultDate: new Date(1910,00,01)
+
+        //minDate:(1890, 01, 01),
+        //maxDate: '+125Y'
+      });
+  });
+//<-------Ensures that logic based responses for "Are you a homeowner" are hidden by default
+    $(document).ready(function(){
+      hideStuff();
+    });
+
+    function hideStuff(){
+      $("#monthly_mortgage").parent().hide();
+      $("#monthly_rent").parent().hide();
+      $("#has_mortgage").parent().hide();
+      $("#monthly_home").parent().hide();
+    };
+//<------------------------------------>
+//If user selects 'Yes', then ask questions about monthly cost of owning a home, if 'No' then ask //questions about average monthly rent 
+    
+
+    function showStuff(){
+       if ($('#homeowner_yes').is(':checked')){
+              $("#has_mortgage").parent().show();
+                if ($('#mortgage_yes').is(':checked')){
+                    $("#monthly_mortgage").parent().show();
+                    //$("#monthly_rent").hide();
+                    //$("#monthly_home").hide();
+                }
+                else if($('#mortgage_no').is(':checked')){
+                        $("#monthly_home").parent().show();
+                      //$("#monthly_rent").hide();
+                      //$("#monthly_mortgage").hide();
+                    }
+                      //$("#monthly_home").hide();
+                      //$("#monthly_rent").hide();
+                      //$("#monthly_mortgage").hide();
+          }
+          if($('#homeowner_no').is(':checked')){
+              $("#monthly_rent").parent().show();
+              //$("#has_mortgage").hide();
+              //$("#monthly_mortgage").hide();
+              //$("#monthly_home").hide();
+          }
+  };
+
+  $(function(){
+      $('input[name=homeowner_choice]').click(function(){
+          hideStuff();
+          showStuff();
+      });
+  });
+
+  $(function(){
+    $('input[name=mortgage_choice]').click(function(){
+          hideStuff();
+          showStuff();
+      });
+});
+//<-------------------------------------------------------->
+  $.widget( "ui.timespinner", $.ui.spinner, {
+      options: {
+        // seconds
+        step: 60 * 1000,
+        // hours
+        page: 60
+      },
+
+      _parse: function( value ) {
+          if ( typeof value === "string" ) {
+            // already a timestamp
+            if ( Number( value ) == value ) {
+              return Number( value );
+            }
+            return +Globalize.parseDate( value );
+          }
+          return value;
+        },
+      _format: function( value ) {
+          return Globalize.format( new Date(value), "t" );
+        }
+      });
+
+      $(function() {
+        $("#depart").timespinner();
+        $("#arrive").timespinner();
+      });
+
+      $(function() {
+        $( "#industryOptions" ).selectable();
+  });
+// <-----------These are the jquery UI sliders for mortgage, homecost and average monthly rent------>
+  $(function() {
+    $( "#mortgageRange" ).slider({ //Slider for "What is the average monthly cost of mortgage"
+      range: "min",
+      value: 1000,
+      min: 500,
+      max: 15000,
+      slide: function( event, ui ) {
+        $( "#amountForMortgage" ).val( "$" + ui.value );
+      }
+    });
+    $( "#amountForMortgage" ).val( "$" + $( "#mortgageRange" ).slider( "value" ) );
+});
+
+  $(function() {
+    $( "#homeCostRange" ).slider({
+      range: "min",
+      value: 1000,
+      min: 500,
+      max: 15000,
+      slide: function( event, ui ) {
+        $( "#amountForHome" ).val( "$" + ui.value );
+      }
+    });
+    $( "#amountForHome" ).val( "$" + $( "#homeCostRange" ).slider( "value" ) );
+});
+
+  $(function() {
+    $( "#rentRange" ).slider({
+      range: "min",
+      value: 1000,
+      min: 0,
+      max: 15000,
+      slide: function( event, ui ) {
+        $( "#amountForRent" ).val( "$" + ui.value );
+      }
+    });
+    $( "#amountForRent" ).val( "$" + $( "#rentRange" ).slider( "value" ) );
+});
+//<------------------------------------------------------------------------------>
+
+    function validatePersonalInfo(){
+      var isMissing = false;  
+      $(".requiredPersonal").each(function(index){
+          if (this.value == null || this.value == ""){
+            isMissing = true;
+            $(".mandatory").show();
+              //sweetAlert("Oops it looks some fields are missing!", "error");
+          }
+          else{
+            sweetAlert("This did not work.")
+          }
+      });
+      if(isMissing){
+          $(function(){
+              swal({   
+                title: "Error!",   
+                    text: "Oops it looks some fields are missing!",   
+                    type: "error",   
+                    confirmButtonText: "Ok" 
+                });
+              });
+      }
+}
+
+function validateHousehold(){
+      var isMissing = false;  
+      $(".requiredHousehold").each(function(index){
+          if (this.value == null || this.value == ""){
+            isMissing = true;
+            $(".mandatory").show();
+              //sweetAlert("Oops it looks some fields are missing!", "error");
+          }
+          else{
+            sweetAlert("This did not work.")
+          }
+      });
+      if(isMissing){
+          $(function(){
+              swal({   
+                title: "Error!",   
+                    text: "Oops it looks some fields are missing!",   
+                    type: "error",   
+                    confirmButtonText: "Ok" 
+                });
+              });
+      }
+}
+  function validateEmployment(){
+    var isMissing = false;  
+      $(".requiredEmployment").each(function(index){
+          if (this.value == null || this.value == ""){
+            isMissing = true;
+            $(".mandatory").show();
+              //sweetAlert("Oops it looks some fields are missing!", "error");
+          }
+          else{
+            sweetAlert("This did not work.")
+          }
+      });
+      if(isMissing){
+          $(function(){
+              swal({   
+                title: "Error!",   
+                    text: "Oops it looks some fields are missing!",   
+                    type: "error",   
+                    confirmButtonText: "Ok" 
+                });
+              });
+      }
+  }
+
+  function validateBanking(){
+    var isMissing = false;  
+      $(".requiredBankingPreferences").each(function(index){
+          if (this.value == null || this.value == ""){
+            isMissing = true;
+            $(".mandatory").show();
+              //sweetAlert("Oops it looks some fields are missing!", "error");
+          }
+          else{
+            //continue onto next section of form
+          }
+      });
+      if(isMissing){
+          $(function(){
+              swal({   
+                title: "Error!",   
+                    text: "Oops it looks some fields are missing!",   
+                    type: "error",   
+                    confirmButtonText: "Ok" 
+                });
+              });
+      }
+  }
+	  </script>
+</head>
+<body>
+  <div ng-hide="summary">
+    <h1>Sample Bank Form</h1>
+      <form name="webform" class="form-horizontal">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <div id="sectionHeaders">
+            <h2>Personal</h2>
+              <div id="pInfo" class="container">
+                <div class="row">
+                  <div name="columnleft" class="col-sm-4">
+                    <span class="mandatory">*</span>
+                    <label for="fname">
+                      First Name
+                    </label>
+                        <input type="text" name="firstname" id="first_name" class="requiredPersonal"placeholder="First" ng-model="firstname"/>  
+                        <span> Hello {{firstname}}  </span>
+                  </div>
+                  <div name="columncenter" class="col-sm-4">
+                    <label for="lname">
+                      Last Name
+                      <span class="mandatory">*</span>
+                    </label>
+                        <input type="text" name="lastname" id="last_name" class="requiredPersonal"placeholder="Last"/>
+                  </div>
+                  <div name="columnright" class="col-sm-4">
+                    <label for="minitial">
+                      Middle Initial
+                    </label>
+                        <input type="text" name="middleinitial" id="middle_initial" placeholder="Middle"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div name="columnleft" class="col-sm-4">
+                    <label for="streetaddress">
+                      Street&nbsp;Address 
+                      <span class="mandatory">*</span>
+                    </label>
+                      <input type="text" name="streetaddress" id="street_address" class="requiredPersonal" placeholder="Address"/><br/>
+                  </div>
+                  <div name="columncenter" class="col-sm-4">
+                    <label for="city">
+                      City
+                      <span class="mandatory">*</span>
+                    </label><br/>
+                      <input type="text" name="city" id="city" placeholder="City" 
+                      class="requiredPersonal"/>
+                  </div>
+                  <div name="columnright" class="col-sm-4">
+                    <span class="mandatory">*</span>
+                    <label for="state">
+                    State
+                    </label><br/>
+                      <input type="text" name="state" id="state" placeholder="State"class="requiredPersonal"/><br/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div name="columnleft" class="col-sm-4">
+                    <label for="zip">
+                    Zip Code
+                    <span class="mandatory">*</span>
+                    </label><br/>
+                      <input type="text" name="zip" id="zip_code" placeholder="Zip Code" class="requiredPersonal"/><br/>
+                  </div>
+                  <div name="columncenter" class="col-sm-4">
+                    <label for="Gender">
+                    Gender
+                    </label><br/>
+                    <select id="gender">
+                      <option value="No Response">No Response</option>
+                      <option value="female">Female</option>
+                      <option value="male">Male</option>
+                    </select>
+                  </div>
+                  <div name="columnright" class="col-sm-4">
+                    <label for="age">
+                    Age
+                    </label>
+                  <div id="jq-dropdown-1" class="jq-dropdown jq-dropdown-tip">
+                        <select class="age-dropdown">
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div name="columnleft" class="col-sm-4">
+                    <label for="birthday">
+                    Birthday
+                    <span class="mandatory">*</span>
+                    <input id="birthday" placeholder="Birthday" class="requiredPersonal"/><br/>
+                    </label>
+                  </div>
+                </div>
+                <button onclick="validatePersonalInfo(); return false;" id="personalBtn" class="btn btn-default">Continue</button>
+            </div>
+              <h2>Household</h2>
+              <div id="hInfo">
+                <div class="row">
+                  <div name="columnleft" class="col-sm-4">
+                    <label for="residents">
+                    Number of Residents
+                    </label>
+                    <span class="mandatory">*</span><br/>
+                    <input type="number"name="residents" id="num_residents" placeholder="Number" class="requiredHousehold"/><br/>
+                  </div>
+                  <div name="columncenter" class="col-sm-4">
+                    <label for="housingtype">
+                    Type of Housing
+                    </label><br/>
+                    <select>
+                      <option>Select Housing</option>
+                      <option>apartment</option>
+                      <option>boat</option>
+                      <option>condo</option>
+                      <option>mobile home</option>
+                      <option>one-family attached house</option>
+                      <option>one-family detached house</option>
+                      <option>rv</option>
+                      <option>two-family attached house</option>
+                    </select>
+                  </div>
+                  <div name="columnright" class="col-sm-4">
+                    <label for="language">
+                      Language spoken in home
+                    </label><br/>
+                        <input type="text" name="language" id="lang" placeholder="Language"/><br/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div name="columnleft" class="col-sm-4">
+                    <div id="hq" name="homeowner_question">
+                    <label for="homequestion" class="requiredHousehold">
+                    Are you a homeowner?
+                    </label>
+                    <span class="mandatory">*</span><br/>
+                    <input type="radio" name="homeowner_choice" id="homeowner_yes" value="yes"/>Yes<br/>
+                    <input type="radio" name="homeowner_choice" id="homeowner_no" value="no"/>No<br/>
+                    </div>
+                  </div>
+                  <div name="columncenter" class="col-sm-4">
+                    <div id="monthly_rent">
+                      <label for="avgRentCost">
+                      What is your average monthly rental cost?
+                      </label><br/>
+                      <span class="mandatory">*</span>
+                      <br>
+                        <input type="text" id="amountForRent" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                      <br/>
+                    <div id="rentRange"></div>
+                    </div>
+                  </div>
+                  <div name="columncenter" class="col-sm-4">
+                    <div id="has_mortgage">
+                      <label for="mrtge">
+                      Do you have a mortgage?
+                      </label>
+                      <span class="mandatory">*</span><br/>
+                      <input type="radio"name="mortgage_choice" id="mortgage_yes" value="yes"/>Yes<br/>
+                      <input type="radio"name="mortgage_choice" id="mortgage_no" value="no"/>No<br/>
+                    </div>
+                  </div>
+                  <div name="columncenter" class="col-sm-4">
+                    <div id="monthly_home"
+                      <label for="avgHomeCost">
+                      What is the average monthly cost for your home?
+                      </label><br/>
+                      <span class="mandatory">*</span><br/>
+                      <br>
+                        <input type="text" id="amountForHome" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                      <br/>
+                    <div id="homeCostRange"></div>
+                    </div>
+                  </div>
+                  <div name="columncenter" class="col-sm-4">
+                    <div id="monthly_mortgage"
+                      <label for="avgMrtgCost">
+                      What is the average monthly cost for your mortgage?
+                      </label>
+                      <span class="mandatory">*</span><br/>
+                        <input type="text" id="amountForMortgage" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                      <br/>
+                    <div id="mortgageRange"></div>
+                    </div>
+                  </div>
+                  <br><button onclick="validateHousehold(); return false;" id="householdBtn" 
+                  class="btn btn-default">Continue</button>
+                </div>
+                </div>
+              <h2>Employment</h2>
+              <div id="employ">
+                <div class="row">
+                  <div name="columnleft" class="col-sm-6">
+                    <div id="num_employeed">
+                      <label for="numEmployeed">
+                      How many residents over the age of 16 are employed in your household?
+                      </label>
+                      <span class="mandatory">*</span><br/>
+                      <input type="text" id="numEmployeed" placeholder="Number" 
+                      class="requiredEmployment"/><br/>
+                    </div>
+                  </div>
+                  <div name="columnright" class="col-sm-6">
+                      <label for="travelToWork">
+                      How long is your commute to work?
+                      </label>
+                      <span class="mandatory">*</span><br/>
+                      <input type="text" name="travelToWork" id="commute" placeholder="Minutes" class="requiredEmployment"/><br/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div name="columnleft" class="col-sm-6">
+                    <label for="departureToWork">
+                    What time do you typically depart for work?
+                    </label><br/>
+                    <input id="depart" name="spinner" value="08:30 AM">
+                  </div>
+                  <div name="columncenter" class="col-sm-6">
+                    <label for="arriveFromWork">
+                    What time do you typically arrive for work?
+                    </label><br/>
+                    <input id="arrive" name="spinner" value="06:30 PM">
+                  </div>
+                  <div name="columncenter" class="col-sm-6">
+                    <label for="industryOfEmployment">
+                    Which industry are you employed in (for multiple jobs, select primary source of income)?
+                    </label><br/>
+                      <select id="industryOptions_column1">
+                          <option value="select">Select industry</option>
+                          <option value="agriculture">agriculture</option>
+                          <option value="accounting">accounting</option>
+                          <option value="advetising">advertising</option>
+                          <option value="aerospace">aerospace</option>
+                          <option values="airline">aircraft</option>
+                          <option value="apparel&accessories">apparel & accessories</option>
+                          <option value="automotive">automotive</option>
+                          <option value="banking">banking</option>
+                          <option value="broadcasting">broadcasting</option>
+                          <option value="biotech">biotechnology</option>
+                          <option value="call-centers">call centers</option>
+                          <option value="cargo-handling">cargo handling</option>
+                          <option value="chemical">chemical</option>
+                          <option value="computer">computer</option>
+                          <option value="consulting">conslting</option>
+                          <option value="consumer-products">consumer products</option>
+                          <option value="consmetics">cosmetics</option>
+                          <option value="defense">defense</option>
+                          <option value="department-stores">department stores</option>
+                          <option value="ecommerce">ecommerce</option>
+                          <option value="education">education</option>
+                          <option value="electronics">electronics</option>
+                          <option value="energy">energy</option>
+                          <option value="entertainment&leisure">entertainment & leisure</option>
+                          <option value="executive-search">executive search</option>
+                          <option value="financial-services">financial services</option>
+                          <option value="food-bev-tob">food, beverage & tobacco</option>
+                          <option value="grocery">grocery</option>
+                          <option value="healthcare">healthcare</option>
+                          <option value="internet-publishing">internet publishing</option>
+                          <option value="investment-banking">investment banking</option>
+                          <option value="legal">legal</option>
+                          <option value="manufacturing">manufacturing</option>
+                          <option value="motion-picture&video">motion picture & video</option>
+                          <option value="music">music</option>
+                          <option value="newspaper">news & media</option>
+                          <option value="oil&gas">oil & gas</option>
+                          <option value="pension-funds">pension funds</option>
+                          <option value="pharmaceuticals">pharmaceuticals</option>
+                          <option value="private-equity">private equity</option>
+                          <option value="public-relations">public relations</option>
+                          <option value="publishing">publishing</option>
+                          <option value="real-estate">real estate</option>
+                          <option value="retail&wholesale">retail & wholesale</option>
+                          <option value="securities">securities & commodities exchanges</option>
+                          <option value="soap&detergent">soap & detergent</option>
+                          <option value="software">software</option>
+                          <option value="sports">sports</option>
+                          <option value="technology">technology</option>
+                          <option value="telecommunications">telecommunications</option>
+                          <option value="television">television</option>
+                          <option value="transportation">transportation</option>
+                          <option value="travel">travel</option>
+                          <option value="trucking">trucking</option>
+                          <option value="venture-capital">venture capital</option>
+                      </select>
+                    <button onclick="validateEmployment(); return false;" id="employmentBtn" 
+                    class="btn btn-default">Continue</button>
+                  </div>
+              </div>
+              </div>
+              <h2>Banking</h2>
+              <div id="banking">
+                <div name="columnleft" class="col-sm-4">
+                    <label for="bankNameQuestion">
+                    Which bank do you currently use?
+                    </label>
+                    <span class="mandatory">*</span><br/>
+                    <select id="bankList" class="requiredBankingPreferences">
+                        <option value="selectBank">Select bank</option>
+                        <option value="colorado">ColoradoR</option>
+                        <option value="denver">DenverB</option>
+                        <option value="international">InternationalFunds</option>
+                        <option value="national">NationalBank</option>
+                        <option value="procorp">Procorp XYZ</option>
+                        <option value="statebank">StateBank</option>
+                    </select>
+                </div>
+                <div name="columncenter" class="col-sm-4">
+                    <label for="preferedBanking">
+                    What is your preferred method of banking?
+                    </label>
+                    <span class="mandatory">*</span><br/>
+                    <select id="bankingMethodList" class="requiredBankingPreferences">
+                        <option value="selectBankingMethod">Select preference</option>
+                        <option value="inperson">in person</option>
+                        <option value="online">online</option>
+                        <option value="mobile">online from a mobile device</option>
+                    </select><br/>
+                </div>
+                <div name="columnright" class="col-sm-4">
+                    <label for="preferedBanking" id="preferredBanking">
+                      How frequently do you use this bank's services?
+                    </label>
+                    <span class="mandatory">*</span><br/>
+                    <select id="bankingFrequencyList" class="requiredBankingPreferences">
+                      <option value="selectBankingFrequency">Select frequency</option>
+                      <option value="1x">1x</option>
+                      <option value="2x">2x</option>
+                      <option value="3x">3x</option>
+                      <option value="4x">4x</option>
+                      <option value="5x">5x</option>
+                      <option value="+5x">more than 5x</option>
+                    </select>
+                    <select id="bankingTimePeriodList" class="requiredBankingPreferences">
+                      <option value="selectBankingTimePeriod">Select period</option>
+                      <option value="day">per day</option>
+                      <option value="week">per week</option>
+                      <option value="month">per month</option>
+                      <option value="year">per year</option>
+                    </select>
+                </div>
+              <div name="row" class="col-sm-6">
+                <div id="bankingServices">
+                  <label for="bankingServicesQuestion" id="bankingServicesQuestion" 
+                  class="requiredBankingPreferences">
+                  <span class="mandatory">*</span><br/>
+                  Select the banking services that you currently use (select all that apply)
+                  </label>
+                    <div id="bankServicesColumn1" class="col-sm-6">
+                      <input type="checkbox" name="balance" value="checkBalances"> checking balance<br/>
+                      <input type="checkbox" name="deposit" value="deposits"> making deposits<br/>
+                      <input type="checkbox" name="plan" value="financialPlan"> financial planning<br/>
+                    </div>
+                    <div id="bankServicesColumn2" class="col-sm-6">
+                      <input type="checkbox" name="invest" value="investing"> investing<br/>
+                      <input type="checkbox" name="loan" value="takeLoans"> taking out loans<br/>
+                      <input type="checkbox" name="transfer" value="transferMoney"> transfering money
+                      <br/>
+                      <input type="checkbox" name="bills" value="payBills"> paying bills<br/>
+                    </div>
+                </div>
+                  <!-- <button onclick="validateBanking(); return false;" id="bankingBtn" class="btn btn-default" ng-click="summary = true;">View summary</button> -->
+                  <button id="bankingBtn" class="btn btn-default" ng-click="summary = true;">View summary</button>
+              </div>
+            </div>
+        </div>
+      </form>
+  </div>
+  <div ng-show="summary">
+    <h1>Summary view</h1>
+    First Name: {{ firstname }}
+    <button id="bankingBtn" class="btn btn-default" ng-click="summary = false;">Edit</button>
+  </div>
+<script src="scripts/angular.min.js"></script>
+</body>
+</html>

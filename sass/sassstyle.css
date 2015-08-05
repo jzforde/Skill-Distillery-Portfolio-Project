@@ -1,0 +1,35 @@
+#container {
+  width: 700px;
+  background-color: #c00; }
+  #container p {
+    clear: both;
+    text-align: center;
+    padding-top: 10px; }
+
+ul {
+  list-style: none; }
+
+ul li {
+  float: left;
+  margin-right: 5px;
+  width: 120px;
+  padding: 5px 0;
+  text-align: center;
+  color: white; }
+
+ul li:nth-child(1) {
+  background-color: #b30000; }
+
+ul li:nth-child(2) {
+  background-color: #990000; }
+
+ul li:nth-child(3) {
+  background-color: maroon; }
+
+ul li:nth-child(4) {
+  background-color: #660000; }
+
+ul li:nth-child(5) {
+  background-color: #4d0000; }
+
+/*# sourceMappingURL=sassstyle.css.map */

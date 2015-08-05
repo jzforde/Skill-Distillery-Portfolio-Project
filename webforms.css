@@ -1,0 +1,137 @@
+
+h1{
+  font-family: 'Crimson Text', serif;
+  color: #0066FF;
+  font-size: 46px;
+  font-style: bold;
+  text-align: center;
+}
+
+#sectionHeaders{
+  font-family: 'Roboto', sans-serif;
+  font-size: 25px;
+
+}
+
+#pInfo{
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+}
+
+#hInfo{
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+}
+#employ{
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+}
+
+#banking{
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+}
+.mandatory{
+  color: red;
+}
+
+#columnleft{
+  float:left;
+  /*margin-right: 40px;*/
+  width: 33%;
+  padding-top: 20px;
+}
+
+#columncenter{
+  float:left;
+  margin-right:auto;
+  margin-left:auto;
+  width: 33%;
+  padding-top: 20px;
+
+}
+
+#columnright{
+  float:right;
+  /*margin-right: 45px;*/
+  width: 33%;
+  padding-top: 20px;
+
+}
+
+h2{
+  margin-top: 45px;
+}
+
+#gender{
+  padding-right: 5px;
+}
+
+.age-dropdown {
+    position: relative;
+    /*display: inherit !important;*/
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    -moz-overflow-scrolling: touch;
+    -ms-overflow-scrolling: touch;
+    -o-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    top: 0 !important;
+    left: 0 !important;
+    height: auto;
+    max-height: 200px;
+    margin: 0;
+    border-left: none;
+    border-right: none;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    -ms-border-radius: 0 !important;
+    -o-border-radius: 0 !important;
+    border-radius: 0 !important;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -ms-box-shadow: none;
+    -o-box-shadow: none;
+    box-shadow: none;
+}
+
+#industryOptions{
+  list-style-type:none;
+  width:60%;
+}
+
+#industryOptions .ui-selecting{
+  background: #FECA40;
+}
+
+#industryOptions .ui-selected{
+  background: #F39814;
+  color: white;
+}
+
+
+#bankingServices{
+  float:left;
+
+}
+
+#bankingServicesQuestion{
+  float:left;
+  margin-right: 145px;
+
+}
+
+.ui-monthly-mortgage{
+  width: 5%;
+}
+
+.ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year{
+  color: black;
+}
+
+#num_employeed{
+  -moz-font-weight: bold;
+
+}
+
+

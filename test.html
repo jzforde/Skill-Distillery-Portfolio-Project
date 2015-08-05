@@ -1,0 +1,232 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href='http://fonts.googleapis.com/css?family=Crimson+Text' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' type='text/css' href="webforms.css">
+    <link rel="stylesheet" href="styles/jquery-ui.min.css">
+    <script src="scripts/jquery-2.1.4.js"></script>
+    <script src="scripts/jquery-ui.min.js"></script>
+    <script>
+    $(document).ready(function(){
+      $( "#sectionHeaders" ).accordion();
+    });
+
+    $(function(){
+      for(var i = 0; i <106; i++){
+          $(".age-dropdown").append("<option>" + i + "</option>")
+      }
+    });
+
+    $.widget( "ui.timespinner", $.ui.spinner, {
+    options: {
+      // seconds
+      step: 60 * 1000,
+      // hours
+      page: 60
+    },
+
+    _parse: function( value ) {
+      if ( typeof value === "string" ) {
+        // already a timestamp
+        if ( Number( value ) == value ) {
+          return Number( value );
+        }
+        return +Globalize.parseDate( value );
+      }
+      return value;
+    },
+
+    _format: function( value ) {
+      return Globalize.format( new Date(value), "t" );
+    });
+
+  $(function() {
+    $( "#spinner" ).timespinner();
+
+    $( "#culture" ).change(function() {
+      var current = $( "#spinner" ).timespinner( "value" );
+      Globalize.culture( $(this).val() );
+      $( "#spinner" ).timespinner( "value", current );
+    });
+  });
+
+    $(function() {
+      $( "#birthday" ).datepicker({
+        changeMonth: true,
+        changeYear: true
+      });
+    });
+
+    $(function(){
+
+    }
+	  </script>
+</head>
+<body>
+    <h1>Procorp XYZ</h1>
+      <form>
+        <div id="sectionHeaders">
+            <h2>Personal Information</h2>
+              <div id="pInfo" class="form-group">
+                <div id="row">
+                  <div id="columnleft">
+                    <label for="fname">
+                      First Name
+                      <span class="mandatory">*</span><br/>
+                    </label>
+                        <input type="text" name="firstname" id="first_name" placeholder="First Name"/><br/>
+                  </div>
+                  <div id="columncenter">
+                    <label for="lname">
+                      Last Name
+                      <span class="mandatory">*</span><br/>
+                    </label>
+                        <input type="text" name="lastname" id="last_name" placeholder="Last Name"/><br/>
+                  </div>
+                  <div id="columnright">
+                    <label for="minitial">
+                      Middle Initial<br/>
+                    </label>
+                        <input type="text" name="middleinitial" id="middle_initial" placeholder="Middle Name"/><br/>
+                  </div>
+                </div>
+                <div id="row">
+                  <div id="columnleft">
+                    <label for="streetaddress">
+                      Street Address
+                      <span class="mandatory">*</span><br/>
+                    </label>
+                      <input type="text" name="streetaddress" id="street_address" placeholder="Street Address"/><br/>
+                  </div>
+                  <div id="columncenter">
+                    <label for="cty">
+                      City
+                      <span class="mandatory">*</span><br/>
+                    </label>
+                      <input type="text" name="city" id="city" placeholder="City"/><br/>
+                  </div>
+                  <div id="columnright">
+                    <label for="state">
+                    State
+                    <span class="mandatory">*</span><br/>
+                    </label>
+                      <input type="text" name="state" id="state" placeholder="State"/><br/>
+                  </div>
+                </div>
+                <div id="row">
+                  <div id="columnleft">
+                    <label for="zip">
+                    Zip Code
+                    <span class="mandatory">*</span><br/>
+                    </label>
+                      <input type="text" name="zip" id="zip_code" placeholder="Zip Code"/><br/>
+                  </div>
+                  <div id="columncenter">
+                    <label for="Gender">
+                    Gender<br/>
+                    </label>
+                    <select id="gender">
+                      <option value="No Response">No Response</option>
+                      <option value="female">Female</option>
+                      <option value="male">Male</option>
+                    </select>
+                  </div>
+                  <div id="columnright">
+                    <label for="age">
+                    Age<br/>
+                    </label>
+                  <div id="jq-dropdown-1" class="jq-dropdown jq-dropdown-tip">
+                        <select class="age-dropdown">
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                <div id="row">
+                  <div id="columnleft">
+                    <label for="bday">
+                    Birthday
+                    <span class="mandatory">*</span><br/>
+                    <input name="birthday" id="birthday" placeholder="Birthday"/><br/>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <h2>Household Information</h2>
+              <div id="hInfo">
+                <div id="row">
+                  <div id="columnleft">
+                    <label for="residents">
+                    Number of Residents
+                    </label>
+                    <span class="mandatory">*</span><br/>
+                    <input type="number"name="residents" id="num_residents" placeholder="Number of Residents"/><br/>
+                  </div>
+                  <div id="columncenter">
+                    <label for="housingtype">
+                    Type of Housing<br/>
+                    </label>
+                    <select>
+                      <option>Select Housing</option>
+                      <option>apartment</option>
+                      <option>boat</option>
+                      <option>condo</option>
+                      <option>mobile home</option>
+                      <option>one-family attached house</option>
+                      <option>one-family detached house</option>
+                      <option>rv</option>
+                      <option>two-family attached house</option>
+                    </select>
+                  </div>
+                  <div id="columnright">
+                    <label for="language">
+                      Language spoken in home<br/>
+                    </label>
+                        <input type="text" name="language" id="lang" placeholder="Language"/><br/>
+                  </div>
+                </div>
+                <div id="row">
+                  <div id="columnleft">
+                    <label for="rentOrOwn">
+                    Do you rent or own your own home?
+                    </label>
+                    <span class="mandatory">*</span><br/>
+                    <input type="radio"name="rent" id="rent" value="rent"/>Rent<br/>
+                    <input type="radio"name="own" id="own" value="own"/>Own<br/>
+                  </div>
+                </div>
+                <div id="row">
+                  <div id="columnleft">
+                    <label for="homeowner_question">
+                    Are you a homeowner?
+                    </label>
+                    <span class="mandatory">*</span><br/>
+                    <input type="radio"name="choice" id="yes" value="yes"/>Yes<br/>
+                    <input type="radio"name="choice" id="choice" value="no"/>No<br/>
+                  </div>
+            </div>
+              <h2>Employment</h2>
+              <div id="employ">
+                    <p>
+                      Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+                      ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+                      amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+                      odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                    </p>
+              </div>
+              <h2>Banking Preferences</h2>
+              <div id="banking">
+
+                    <p>
+                      Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+                      ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+                      amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+                      odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+                    </p>
+              </div>
+
+        </div>
+      </form>
+</body>
+</html>
